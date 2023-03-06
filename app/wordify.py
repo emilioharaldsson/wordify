@@ -36,7 +36,7 @@ def get_top_songs_lyrics():
     returns (string) top 10 song lyrics
     '''
     sp_client = create_spotipy_client("user-top-read")
-    response = format_spotify_response(sp_client.current_user_top_tracks(limit=1)['items'])
+    response = format_spotify_response(sp_client.current_user_top_tracks(limit=10)['items'])
     tracks = clean_list(response)
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
         list_w_lyrics = list(executor.map(get_raw_genius_lyrics, tracks))
@@ -49,15 +49,23 @@ def get_recently_listened_song_lyrics():
 
     '''
     sp_client = create_spotipy_client("user-read-recently-played")
-    response = format_spotify_response(sp_client.current_user_recently_played(limit=10))
+    raw_res = sp_client.current_user_recently_played(limit=10)['items']
+    response = format_spotify_response([x['track'] for x in raw_res])
     tracks = clean_list(response)
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
         list_w_lyrics = list(executor.map(get_raw_genius_lyrics, tracks))
     raw_lyrics = accumulate_all_lyrics(list_w_lyrics)
     return raw_lyrics
 
+def test_recently_spotify():
+     sp_client = create_spotipy_client("user-read-recently-played")
+     res = sp_client.current_user_recently_played(limit=10)
+     return res
 
-
+def test_top_spotify():
+    sp_client = create_spotipy_client("user-top-read")
+    res = sp_client.current_user_top_tracks(limit=10)
+    return res
 def generate_user_story(raw_lyrics):
     '''
     Returns (string) user story based on most-used words in top 20 spotify song lyrics
