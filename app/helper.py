@@ -52,7 +52,7 @@ def filter_text(text):
     words = word_tokenize(text)
     
     stop_words = set(stopwords.words('english'))
-    exclude_list = set(["[", "]", "of", "a", "chorus", "verse", "is", "have", "got","from", "in", "at", "on", "for", "if", "else", "what", "how", "why", "are", "be", "you", "it", "your", "will", "that", "there", "this", "to", "was", "the-"])
+    exclude_list = set(["[", "]", "of", "AI", "ai", "a", "ta", "chorus", "verse", "is", "have", "got","from", "in", "at", "on", "for", "if", "else", "what", "how", "why", "are", "be", "you", "it", "your", "will", "that", "there", "this", "to", "was", "the-"])
     filtered_words = [word for word in words if word not in stop_words and word not in exclude_list]
     
     tagged_words = pos_tag(filtered_words)
